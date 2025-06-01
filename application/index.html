@@ -314,27 +314,31 @@
       }, 6000);
     });
 
-    submitFinal.addEventListener('click', function () {
-        // Copy eligibilityForm data to hidden inputs in finalForm
-  document.getElementById('eligibility_name').value = form.querySelector('input[name="name"]').value;
-  document.getElementById('eligibility_company').value = form.querySelector('input[name="company"]').value;
-  document.getElementById('eligibility_email').value = form.querySelector('input[name="email"]').value;
+submitFinal.addEventListener('click', function (e) {
+  e.preventDefault(); // prevent default for safety
 
-  // Show loading screen
-  fullLoader.classList.add('active');
+  if (finalForm.checkValidity()) {
+    // Copy eligibilityForm data
+    document.getElementById('eligibility_name').value = form.querySelector('input[name="name"]').value;
+    document.getElementById('eligibility_company').value = form.querySelector('input[name="company"]').value;
+    document.getElementById('eligibility_email').value = form.querySelector('input[name="email"]').value;
 
-  // Delay for realism, then submit
-  setTimeout(() => {
-    fullLoader.classList.remove('active');
-    finalForm.submit();  // 💥 This actually sends the combined data
-        finalForm.classList.add('hidden');
-        qualifyTitle.classList.add('hidden');
-        qualifyNote.classList.add('hidden');
-        countdownNote.classList.add('hidden');
-        finalStatus.classList.remove('hidden');
-      
-      }, 5000);
-    });
+    // Show loading screen
+    fullLoader.classList.add('active');
+
+    setTimeout(() => {
+      fullLoader.classList.remove('active');
+      finalForm.submit(); // Now it's valid, submit it
+      finalForm.classList.add('hidden');
+      qualifyTitle.classList.add('hidden');
+      qualifyNote.classList.add('hidden');
+      countdownNote.classList.add('hidden');
+      finalStatus.classList.remove('hidden');
+    }, 5000);
+  } else {
+    finalForm.reportValidity(); // 🔔 Show validation messages
+  }
+});
 
     function startCountdown(min, sec) {
       let total = min * 60 + sec;
